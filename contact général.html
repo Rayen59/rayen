@@ -1,0 +1,327 @@
+<button><a href="Régle de confidelité.html">Platforme de partage de vidéo</a></button>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plateforme de Partage - Pour Scientifiques</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background-color: #007bff;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 10px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+
+        #deleteAllButton {
+            background-color: #dc3545;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            float: right;
+            margin-bottom: 20px;
+        }
+
+        #deleteAllButton:hover {
+            background-color: #c82333;
+        }
+
+        #postForm {
+            margin-bottom: 20px;
+        }
+
+        #postText {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: vertical;
+        }
+
+        input[type="file"] {
+            margin-bottom: 10px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .post {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+            position: relative;
+        }
+
+        .post img, .post video {
+            max-width: 100%;
+            border-radius: 5px;
+            display: block;
+            margin: 10px auto;
+        }
+
+        .deletePostButton {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #dc3545;
+            color: #fff;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .deletePostButton:hover {
+            background-color: #c82333;
+        }
+
+        .comments {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #ccc;
+        }
+
+        .comment {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .comment strong {
+            font-weight: bold;
+        }
+
+        .reactions {
+            margin-top: 10px;
+        }
+
+        .reaction {
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .reaction:hover {
+            text-decoration: underline;
+        }
+
+        form {
+            margin-top: 10px;
+        }
+
+        input[type="text"], input[type="file"] {
+            width: calc(100% - 82px);
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px 0 0 5px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        input[type="text"]:focus, input[type="file"]:focus {
+            border-color: #007bff;
+        }
+
+        button[type="submit"] {
+            width: 80px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 8px;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>Plateforme de Partage</h1>
+        <a href="videos.html">Vidéos</a>
+    </div>
+
+    <div class="container">
+        <button id="deleteAllButton" onclick="deleteAllPosts()">Supprimer tous les messages</button>
+        <h1>Messages, Images et Fichiers</h1>
+        <div id="postForm">
+            <textarea id="postText" placeholder="Que voulez-vous partager aujourd'hui ?"></textarea>
+            <input type="file" id="postImage" accept="image/*">
+            <button onclick="createPost()">Partager</button>
+        </div>
+        <div id="postsContainer"></div>
+    </div>
+
+    <script>
+        let posts = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('posts')) {
+                posts = JSON.parse(localStorage.getItem('posts'));
+                displayPosts();
+            }
+        });
+
+        function createPost() {
+            const postText = document.getElementById('postText').value;
+            const postImage = document.getElementById('postImage').files[0];
+            
+            const post = {
+                id: Date.now(),
+                text: postText,
+                image: postImage ? URL.createObjectURL(postImage) : null,
+                video: null,
+                comments: [],
+                reactions: { like: 0, love: 0, haha: 0, wow: 0, sad: 0, angry: 0 }
+            };
+
+            posts.unshift(post);
+            localStorage.setItem('posts', JSON.stringify(posts));
+            displayPosts();
+            resetForm();
+        }
+
+        function displayPosts() {
+            const postsContainer = document.getElementById('postsContainer');
+            postsContainer.innerHTML = '';
+
+            posts.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.classList.add('post');
+                postElement.innerHTML = `
+                    <button class="deletePostButton" onclick="deletePost(${post.id})">Supprimer</button>
+                    <p>${post.text}</p>
+                    ${post.image ? '<img src="' + post.image + '" alt="Post Image">' : ''}
+                    ${post.video ? `<video controls><source src="${post.video}" type="video/mp4"></video>` : ''}
+                    <div class="reactions">
+                        <span class="reaction" onclick="react(${post.id}, 'like')">👍 (${post.reactions.like})</span>
+                        <span class="reaction" onclick="react(${post.id}, 'love')">❤️ (${post.reactions.love})</span>
+                        <span class="reaction" onclick="react(${post.id}, 'haha')">😂 (${post.reactions.haha})</span>
+                        <span class="reaction" onclick="react(${post.id}, 'wow')">😮 (${post.reactions.wow})</span>
+                        <span class="reaction" onclick="react(${post.id}, 'sad')">😢 (${post.reactions.sad})</span>
+                        <span class="reaction" onclick="react(${post.id}, 'angry')">😡 (${post.reactions.angry})</span>
+                    </div>
+                    <div class="comments">
+                        ${post.comments.map(comment => `
+                            <div class="comment">
+                                <strong>${comment.user}:</strong> ${comment.text}
+                            </div>
+                        `).join('')}
+                        <form onsubmit="addComment(event, ${post.id})">
+                            <input type="text" placeholder="Ajouter un commentaire..." required>
+                            <button type="submit">Commenter</button>
+                        </form>
+                    </div>
+                `;
+                postsContainer.appendChild(postElement);
+            });
+        }
+
+        function react(postId, reactionType) {
+            const post = posts.find(post => post.id === postId);
+            if (post) {
+                const userId = 'user'; // Replace with actual user identification logic
+                const userReactions = JSON.parse(localStorage.getItem('userReactions')) || {};
+                
+                if (!userReactions[userId]) {
+                    userReactions[userId] = {};
+                }
+                
+                if (!userReactions[userId][postId]) {
+                    userReactions[userId][postId] = true; // Mark that the user has reacted to this post
+                
+                    post.reactions[reactionType]++;
+                    localStorage.setItem('posts', JSON.stringify(posts));
+                    localStorage.setItem('userReactions', JSON.stringify(userReactions));
+                    displayPosts();
+                } else {
+                    alert('Vous avez déjà réagi à ce post.');
+                }
+            }
+        }
+
+        function addComment(event, postId) {
+            event.preventDefault();
+            const post = posts.find(post => post.id === postId);
+            if (post) {
+                const commentText = event.target.querySelector('input').value;
+                post.comments.push({ user: 'Utilisateur', text: commentText });
+                localStorage.setItem('posts', JSON.stringify(posts));
+                displayPosts();
+                event.target.reset();
+            }
+        }
+
+        function deletePost(postId) {
+            posts = posts.filter(post => post.id !== postId);
+            localStorage.setItem('posts', JSON.stringify(posts));
+            displayPosts();
+        }
+
+        function deleteAllPosts() {
+            posts = [];
+            localStorage.setItem('posts', JSON.stringify(posts));
+            displayPosts();
+        }
+
+        function resetForm() {
+            document.getElementById('postText').value = '';
+            document.getElementById('postImage').value = null;
+        }
+    </script>
+</body>
+</html>

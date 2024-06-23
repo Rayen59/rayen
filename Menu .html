@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu - Math Olympiad</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.menu {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 800px;
+    text-align: center;
+    position: relative; /* Permet de positionner le fond absolument */
+}
+
+.background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #FF5722, #FFC107, #4CAF50, #2196F3);
+    background-size: 400% 400%;
+    animation: gradientAnimation 10s ease infinite;
+    border-radius: 10px;
+    z-index: -1; /* Placer derrière le contenu principal */
+}
+
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.title {
+    font-size: 36px;
+    font-weight: bold;
+    color: transparent; /* Rendre le texte du titre transparent */
+    position: relative; /* Pour positionner les segments colorés */
+    z-index: 1; /* Pour que le texte soit au-dessus du fond */
+}
+
+.title .segment {
+    position: relative;
+    display: inline-block;
+    font-size: inherit; /* Hériter de la taille de police */
+}
+
+.segment-1 {
+    color: #FF5722; /* Orange */
+    -webkit-text-fill-color: transparent; /* Rendre le texte transparent pour Chrome */
+    -webkit-text-stroke-width: 2px; /* Contour du texte pour Chrome */
+    -webkit-text-stroke-color: #FF5722; /* Couleur du contour pour Chrome */
+    text-shadow: 2px 2px 3px rgba(0,0,0,0.3); /* Ombre portée pour améliorer la lisibilité */
+}
+
+.segment-2 {
+    color: #2196F3; /* Bleu */
+    -webkit-text-fill-color: transparent; /* Rendre le texte transparent pour Chrome */
+    -webkit-text-stroke-width: 2px; /* Contour du texte pour Chrome */
+    -webkit-text-stroke-color: #2196F3; /* Couleur du contour pour Chrome */
+    text-shadow: 2px 2px 3px rgba(0,0,0,0.3); /* Ombre portée pour améliorer la lisibilité */
+}
+
+.sections {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 60px; /* Pour éviter que les sections ne se chevauchent avec le fond */
+}
+
+.section {
+    flex: 1;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+.section h2 {
+    font-size: 24px;
+    color: #4CAF50;
+    margin-bottom: 10px;
+}
+
+.section ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.section ul li {
+    margin-bottom: 5px;
+}
+
+.section ul li a {
+    text-decoration: none;
+    color: #333333;
+    font-size: 16px;
+}
+
+.footer {
+    font-size: 14px;
+    color: #666666;
+    margin-top: 20px;
+}
+
+</style>
+<body>
+    <div class="menu">
+        <div class="background"></div>
+        <div class="title">
+            <span class="segment segment-1">Math</span>
+            <span class="segment segment-2">Olympiad</span>
+        </div>
+        
+        <div class="sections">
+            <div class="section">
+                <h2>Section 1</h2>
+                <ul>
+                    <li><a href="Algebre.html">Algébre</a></li>
+                    <li><a href="géométrie.html">Géométrie</a></li>
+                    <li><a href="#">Sous-page 3</a></li>
+                </ul>
+            </div>
+            <div class="section">
+                <h2>Section 2</h2>
+                <ul>
+                    <li><a href="contact général.html">Meetnest</a></li>
+                    <li><a href="A propos de nous .html">A propos de nous</a></li>
+                    <li><a href="#">Sous-page 6</a></li>
+                </ul>
+            </div>
+            <div class="section">
+                <h2>Section 3</h2>
+                <ul>
+                    <li><a href="#">Sous-page 7</a></li>
+                    <li><a href="#">Sous-page 8</a></li>
+                    <li><a href="#">Sous-page 9</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Adresse : [rayenbouazizi336@gmail.com]</p>
+            <p>Date : [1/6/2024]</p>
+            <p>Contact : [Contactez-nous:rayenbouazizi336@gmail.com]</p>
+        </div>
+    </div>
+</body>
+</html>

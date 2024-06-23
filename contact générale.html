@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Application de Messagerie</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+    body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.container {
+  background-color: #fff;
+  padding: 20px;
+  width: 400px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  text-align: center;
+}
+
+#message-container {
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  max-height: 300px;
+  overflow-y: scroll;
+}
+
+#message-form {
+  margin-top: 10px;
+}
+
+#name-input,
+#message-input {
+  width: calc(100% - 80px);
+  padding: 8px;
+  margin-bottom: 10px;
+}
+
+#file-input {
+  margin-bottom: 10px;
+}
+
+button {
+  padding: 8px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.message {
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+}
+
+.message img {
+  max-width: 100%;
+  margin-top: 10px;
+}
+
+</style>
+<body>
+  <div class="container">
+    <h1>Application de Messagerie</h1>
+    <div id="message-container">
+      <!-- Zone pour afficher les messages -->
+    </div>
+    <form id="message-form" enctype="multipart/form-data">
+      <input type="text" id="name-input" placeholder="Votre nom" required>
+      <textarea id="message-input" placeholder="Écrivez votre message ici..." required></textarea>
+      <input type="file" id="file-input" name="file" accept=".jpg, .jpeg, .png, .gif, .pdf, .doc, .docx" onchange="previewImage(event)" />
+      <div id="image-preview"></div>
+      <button type="submit">Envoyer</button>
+    </form>
+  </div>
+
+  <script>
+    // JavaScript pour gérer l'envoi de messages et de fichiers
+    const messageForm = document.getElementById('message-form');
+    const nameInput = document.getElementById('name-input');
+    const messageInput = document.getElementById('message-input');
+    const fileInput = document.getElementById('file-input');
+    const messageContainer = document.getElementById('message-container');
+    const imagePreview = document.getElementById('image-preview');
+
+    // Fonction pour afficher l'aperçu de l'image
+    function previewImage(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = document.createElement('img');
+          img.src = e.target.result;
+          img.style.maxWidth = '100%';
+          imagePreview.innerHTML = '';
+          imagePreview.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // Fonction pour afficher les messages depuis le localStorage
+    function displayMessages() {
+      messageContainer.innerHTML = '';
+      const messages = JSON.parse(localStorage.getItem('messages')) || [];
+      messages.forEach((message, index) => {
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message');
+        messageElement.innerHTML = `
+          <p><strong>${message.name}</strong>: ${message.text}</p>
+          ${message.file ? `<img src="${message.file.url}" style="max-width: 100%; margin-top: 10px;" />` : ''}
+          <button onclick="deleteMessage(${index})">Supprimer</button>
+        `;
+        messageContainer.appendChild(messageElement);
+      });
+    }
+
+    // Fonction pour supprimer un message
+    function deleteMessage(index) {
+      let messages = JSON.parse(localStorage.getItem('messages')) || [];
+      messages.splice(index, 1);
+      localStorage.setItem('messages', JSON.stringify(messages));
+      displayMessages(); // Mettre à jour l'affichage après suppression
+    }
+
+    // Afficher les messages au chargement de la page
+    displayMessages();
+
+    // Écouter l'envoi du formulaire
+    messageForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const formData = new FormData();
+      formData.append('name', nameInput.value);
+      formData.append('message', messageInput.value);
+      formData.append('file', fileInput.files[0]);
+
+      // Simuler l'envoi des données au serveur
+      // Ici, nous stockons les données localement dans le localStorage
+      const newMessage = {
+        name: nameInput.value,
+        text: messageInput.value,
+        file: fileInput.files[0] ? { name: fileInput.files[0].name, url: URL.createObjectURL(fileInput.files[0]) } : null
+      };
+
+      let messages = JSON.parse(localStorage.getItem('messages')) || [];
+      messages.push(newMessage);
+      localStorage.setItem('messages', JSON.stringify(messages));
+
+      // Afficher le message nouvellement ajouté
+      displayMessages();
+
+      // Réinitialiser les champs du formulaire
+      nameInput.value = '';
+      messageInput.value = '';
+      fileInput.value = '';
+      imagePreview.innerHTML = '';
+    });
+  </script>
+</body>
+</html>
